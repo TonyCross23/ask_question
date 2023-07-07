@@ -1,7 +1,9 @@
 <template>
     <div class="col-md-4">
-        <a href="" class="btn btn-sm btn-primary btn-block mb-1"
-            >Ask New Question</a
+        <Link
+            href="/question/create"
+            class="btn btn-sm btn-primary btn-block mb-1"
+            >Ask New Question</Link
         >
         <div class="card">
             <div class="card-header">All Tag</div>

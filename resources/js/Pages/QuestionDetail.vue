@@ -38,30 +38,54 @@
                         >
                     </div>
                     <!-- end category -->
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card mt-1" v-for="c in q.comment" :key="c.id">
-                        <div class="card-header bg-dark">
-                            <div class="d-flex text-white">
-                                <img
-                                    :src="c.user.image"
-                                    width="40"
-                                    class="rounded-circle shadow-4-strong"
-                                    alt=""
-                                />
-                                <div class="">
-                                    <p class="ms-2 mb-0">{{ c.user.name }}</p>
-                                    <small class="ms-2 mt-0">{{
-                                        c.date
-                                    }}</small>
+
+                    <!-- comment box -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <form @submit.prevent="createComment(q.id)">
+                                        <div class="form-group">
+                                            <textarea
+                                                class="form-control"
+                                                placeholder="Enter Comment"
+                                                v-model="comment"
+                                            ></textarea>
+                                            <button
+                                                class="btn btn-sm btn-danger float-right mt-2"
+                                            >
+                                                Comment
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="card-text">
-                                <small>{{ c.comment }}</small>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div
+                                class="card mt-1"
+                                v-for="c in q.comment"
+                                :key="c.id"
+                            >
+                                <div
+                                    class="card-header d-flex bg-dark text-white"
+                                >
+                                    <img
+                                        :src="c.user.image"
+                                        width="40"
+                                        class="rounded-circle shadow-4-strong me-2"
+                                        alt=""
+                                    />
+
+                                    {{ c.user.name }}
+                                    <p class="ms-1">{{ c.date }}</p>
+                                </div>
+                                <div class="card-body">
+                                    <p>{{ c.comment }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -73,6 +97,7 @@
 
 <script>
 import Master from "./Layout/Master.vue";
+import axios from "axios";
 export default {
     props: { question: Object },
     name: "QuestionDetail",
@@ -81,11 +106,26 @@ export default {
     data() {
         return {
             q: "",
+            comment: "",
         };
     },
 
     created() {
         this.q = this.question;
+    },
+
+    methods: {
+        createComment(q_id) {
+            var data = new FormData();
+            data.append("question_id", q_id);
+            data.append("comment", this.comment);
+            axios.post("/question/comment/create", data).then((res) => {
+                const { success, comment } = res.data;
+                if (success) {
+                    this.q.comment.push(comment);
+                }
+            });
+        },
     },
 };
 </script>

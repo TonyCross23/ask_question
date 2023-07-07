@@ -25,8 +25,15 @@ Route::group(['middleware'=>'auth'],function(){
     // like
     Route::get('/question/like/{id}',[QuestionController::class,'like']);
 
+    // comment
+    Route::post('/question/comment/create',[QuestionController::class,'createComment']);
+
     // question
     Route::get('/question-detail/{slug}',[QuestionController::class,'detail'])->name("question.detail");
+
+    // create question
+    Route::get('/question/create',[QuestionController::class,'create'])->name('question.create');
+    Route::post('/question/create',[QuestionController::class,'store'])->name('question.store');
 
     // logout
     Route::get('/logout',[AuthController::class,'logout'])->name('logout');

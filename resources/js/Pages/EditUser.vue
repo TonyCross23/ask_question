@@ -1,6 +1,5 @@
 <template>
-    <div>
-        <Navbar />
+    <Master>
         <div v-show="$page.props.flash.success">
             <div class="text-center">
                 <div
@@ -23,8 +22,8 @@
             </div>
         </div>
 
-        <div class="container mt-5">
-            <div class="col-4 offset-4">
+        <div class="container mt-1">
+            <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header">Edit User</div>
                     <div class="card-body">
@@ -86,23 +85,23 @@
                                     >
                                 </div>
                                 <span v-show="loading">wait...</span>
-                                <span v-show="!loading">Register</span>
+                                <span v-show="!loading">Update</span>
                             </button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </Master>
 </template>
 
 <script>
-import Navbar from "./Layout/Navbar.vue";
+import Master from "./Layout/Master.vue";
 export default {
     name: "EditUser",
 
     components: {
-        Navbar,
+        Master,
     },
 
     data() {

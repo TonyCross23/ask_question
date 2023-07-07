@@ -26,7 +26,7 @@ Route::group(['middleware'=>'auth'],function(){
     Route::get('/question/like/{id}',[QuestionController::class,'like']);
 
     // question
-    Route::get('/question-detail',[QuestionController::class,'detail']);
+    Route::get('/question-detail/{slug}',[QuestionController::class,'detail'])->name("question.detail");
 
     // logout
     Route::get('/logout',[AuthController::class,'logout'])->name('logout');

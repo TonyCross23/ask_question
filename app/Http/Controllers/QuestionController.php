@@ -7,16 +7,17 @@ use App\Models\Question;
 use App\Models\QuestionLike;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\Question as QuestionTrait;
 
 class QuestionController extends Controller
 {
-
+    use QuestionTrait;
      //home vue 
     public function home () {
         $questions = Question::with('comment','tag','questionsave')->get();
         foreach ($questions as $k=>$v) {
-            $questions[$k]->is_like = $this->likeDetail($v->id)['is_like'];
-            $questions[$k]->like_count = $this->likeDetail($v->id)['like_count'];
+            $questions[$k]->is_like = $this->getLikeDetail($v->id)['is_like'];
+            $questions[$k]->like_count = $this->getLikeDetail($v->id)['like_count'];
         }
        
         return Inertia::render('Home',['questions'=>$questions]);
@@ -33,28 +34,13 @@ class QuestionController extends Controller
         return response()->json(['success' => true]);
     }
 
-    // like count
-    public function likeDetail ($question_id){
-        // check is_like
-        $q_like = QuestionLike::where('question_id',$question_id)
-                                            ->where('user_id',Auth::user()->id)
-                                            ->first();
-                                        
-            if($q_like){
-                $is_like = 'true';
-            }else{
-                $is_like = 'false';
-            }
-
-            // like count
-            $like_count = QuestionLike::where('question_id',$question_id)->count();
-            $data['like_count'] = $like_count;
-            $data['is_like'] = $is_like;
-            return $data;
-    }
 
     //question detail
-    public function detail () {
-        return Inertia::render('QuestionDetail');
+    public function detail ($slug) {
+
+        $question = Question::where('slug',$slug)->with('like','comment.user','tag')->first();
+        $question->is_like = $this->getLikeDetail($question->id)['is_like'];
+        $question->like_count = $this->getLikeDetail($question->id)['like_count'];
+        return Inertia::render('QuestionDetail',['question' => $question]);
     }
 }

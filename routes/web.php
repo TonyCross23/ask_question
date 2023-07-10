@@ -21,15 +21,20 @@ Route::group(['middleware'=>'auth'],function(){
     Route::get('/',[QuestionController::class,'home'])->name('home');
     Route::get('/user/profile/edit',[PageController::class,'userProfile'])->name('profile');
     Route::post('/user/profile/edit',[PageController::class,'postUserProfile'])->name('post.profile');
+    Route::get('profile/question',[QuestionController::class,'userQuestion'])->name('user.question');
+    Route::get('/profile/save-question',[QuestionController::class,'showSaveQuestion'])->name('show.saveQusetion');
 
     // like
     Route::get('/question/like/{id}',[QuestionController::class,'like']);
 
     // comment
     Route::post('/question/comment/create',[QuestionController::class,'createComment']);
+    Route::get('question/delete/{id}',[QuestionController::class,'questionDelete'])->name('question.delete');
 
     // question
     Route::get('/question-detail/{slug}',[QuestionController::class,'detail'])->name("question.detail");
+    Route::post('/question/set/fix',[QuestionController::class,'setFix'])->name("question.fix");
+    Route::post('/question/save',[QuestionController::class,'saveQuestion'])->name("question.save");
 
     // create question
     Route::get('/question/create',[QuestionController::class,'create'])->name('question.create');

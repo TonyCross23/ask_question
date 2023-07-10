@@ -75,9 +75,9 @@ export default {
             data.append("title", this.title);
             data.append("tag", this.tag);
             data.append("description", this.description);
-            axios.post("/question/create", data).then((res) => {
-                this.loading = false;
-            });
+            this.$inertia
+                .post("/question/create", data)
+                .then(() => (this.loading = false));
         },
     },
 };

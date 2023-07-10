@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class QuestionTag extends Model
 {
     use HasFactory;
-    protected $fillabe = ['question_id','tag_id'];
+    protected $fillable = ['question_id','tag_id'];
 
 }

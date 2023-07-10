@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class QuestionSave extends Model
 {
     use HasFactory;
-    protected $fillabe = ['question_id','user_id'];
+    protected $fillable = ['question_id','user_id'];
 
+    public function question () {
+        return $this->belongsTo(Question::class,'question_id');
+    }
 }

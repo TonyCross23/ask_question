@@ -1,6 +1,6 @@
 <template>
     <Master>
-        <div v-for="(q, index) in questions" :key="q.id" class="card my-3">
+        <div v-for="(q, index) in questions.data" :key="q.id" class="card my-3">
             <div class="card-header">
                 <!-- fixed -->
                 <span
@@ -11,15 +11,20 @@
                 <span v-else class="badge badge-sm bg-success">Fixed!</span>
                 <span class="ms-1">{{ q.title }}</span>
                 <div class="float-end">
-                    <span
+                    <button
+                        :hidden="q.is_fixed == 'true'"
                         v-show="isOwn(q.user_id)"
+                        @click="setFixed(idex, q.id)"
                         class="badge badge-sm bg-warning me-1"
-                        >Fixed?</span
                     >
-                    <span
+                        Fixed?
+                    </button>
+                    <a
+                        href="#"
                         v-show="isOwn(q.user_id)"
+                        @click="questionDelete(index, q.id)"
                         class="badge badge-sm bg-dark"
-                        >Delete</span
+                        >Delete</a
                     >
                 </div>
             </div>
@@ -52,7 +57,15 @@
                             <span>{{ q.comment.length }}</span>
                             &nbsp; &nbsp;
                             <!-- save -->
-                            <i class="far fa-bookmark text-primary"></i>
+                            <i
+                                v-show="!q.is_save"
+                                @click="saveQuestion(index, q.id)"
+                                class="far fa-bookmark text-primary"
+                            ></i>
+                            <i
+                                v-show="q.is_save"
+                                class="fas fa-bookmark text-primary"
+                            ></i>
                         </div>
 
                         <!-- category -->
@@ -76,6 +89,7 @@
                 </div>
             </div>
         </div>
+        <Pagination :links="questions.links" />
     </Master>
 </template>
 
@@ -83,12 +97,14 @@
 import Master from "./Layout/Master.vue";
 import { Link } from "@inertiajs/vue3";
 import axios from "axios";
+import Pagination from "./Components/Pagination.vue";
 export default {
     name: "Home",
 
     components: {
         Master,
         Link,
+        Pagination,
     },
 
     data() {
@@ -103,9 +119,9 @@ export default {
 
     methods: {
         like(q_id, index) {
-            this.questions[index].is_like = "true";
-            this.questions[index].like_count++;
-            this.questions;
+            this.questions.data[index].is_like = "true";
+            this.questions.data[index].like_count++;
+
             axios.get(`/question/like/${q_id}`).then((res) => {});
         },
 
@@ -116,6 +132,34 @@ export default {
                 return true;
             }
             return false;
+        },
+
+        setFixed(index, q_id) {
+            var data = new FormData();
+            data.append("id", q_id);
+            axios.post("/question/set/fix", data).then((res) => {
+                if (res.data.success) {
+                    this.questions.data[index].is_fixed = "true";
+                }
+            });
+        },
+
+        questionDelete(index, q_id) {
+            axios.get(this.route("question.delete", q_id)).then((res) => {
+                if (res.data.success) {
+                    this.questions.data.splice(index, 1);
+                }
+            });
+        },
+
+        saveQuestion(index, q_id) {
+            var data = new FormData();
+            data.append("question_id", q_id);
+            axios.post("/question/save", data).then((res) => {
+                if (res.data.success) {
+                    this.questions.data[index].is_save = true;
+                }
+            });
         },
     },
 };
